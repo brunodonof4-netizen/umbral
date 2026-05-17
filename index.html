@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a1612" />
+  <meta name="description" content="MEET: Estoicismo Activo — Tu entrenador de alto rendimiento" />
+  <title>MEET · Estoicismo Activo</title>
+
+  <!-- PWA Manifest inline -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            stone: {
+              950: '#0c0a08',
+              900: '#1a1612',
+              800: '#2a231c',
+              700: '#3d3229',
+              600: '#5c4d40',
+              500: '#7a6557',
+              400: '#a08070',
+              300: '#c4a992',
+              200: '#ddc9b8',
+              100: '#f0e6da',
+              50:  '#faf5ef',
+            },
+            moss:  { DEFAULT: '#4a5240', light: '#6b7560' },
+            ember: { DEFAULT: '#b5541c', light: '#d4713a' },
+            gold:  { DEFAULT: '#c9a84c', light: '#e0c270' },
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'serif'],
+            mono:    ['"Space Mono"', 'monospace'],
+            body:    ['Jost', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-body antialiased overflow-x-hidden">
+
+  <!-- ═══════════════════════════════ LOADER ═══════════════════════════════ -->
+  <div id="loader" class="fixed inset-0 z-50 bg-stone-950 flex flex-col items-center justify-center">
+    <div class="loader-sigil mb-8"></div>
+    <p class="font-display text-3xl text-stone-300 tracking-widest italic">MEET</p>
+    <p class="font-mono text-xs text-stone-600 tracking-[0.3em] mt-2">ESTOICISMO ACTIVO</p>
+    <div class="loader-bar mt-10"></div>
+    <p class="font-body text-stone-600 text-xs mt-6 italic loader-quote">"El obstáculo es el camino."</p>
+  </div>
+
+  <!-- ═══════════════════════════════ APP SHELL ═══════════════════════════════ -->
+  <div id="app" class="opacity-0 transition-opacity duration-700">
+
+    <!-- ── TOP HEADER ── -->
+    <header class="fixed top-0 left-0 right-0 z-40 h-16 bg-stone-950/90 backdrop-blur-md border-b border-stone-800/50 flex items-center justify-between px-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gold to-ember flex items-center justify-center">
+          <span class="text-stone-950 font-mono font-bold text-xs">M</span>
+        </div>
+        <div>
+          <p class="font-display text-lg leading-none text-stone-100">MEET</p>
+          <p class="font-mono text-[9px] text-stone-500 tracking-widest">ESTOICISMO ACTIVO</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div id="streak-badge" class="flex items-center gap-1.5 bg-stone-800 px-3 py-1 rounded-full">
+          <span class="text-gold text-sm">🔥</span>
+          <span id="streak-count" class="font-mono text-xs text-stone-300">0 días</span>
+        </div>
+        <button id="btn-settings" class="text-stone-500 hover:text-stone-300 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── MAIN CONTENT AREA ── -->
+    <main class="pt-16 pb-20 min-h-screen">
+
+      <!-- ════ VIEW: COACH (HOME) ════ -->
+      <section id="view-coach" class="view active px-4 py-6 max-w-2xl mx-auto">
+
+        <!-- Saludo del Coach -->
+        <div class="coach-card mb-6 relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-stone-800 to-stone-900 border border-stone-700/50">
+          <div class="absolute top-0 right-0 w-40 h-40 bg-gold/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+          <p class="font-mono text-xs text-gold tracking-widest mb-3">COACH ESTOICO · <span id="current-date"></span></p>
+          <h1 class="font-display text-3xl italic text-stone-100 leading-tight mb-3" id="coach-greeting">
+            "Levántate. El día no espera."
+          </h1>
+          <p class="font-body text-stone-400 text-sm leading-relaxed" id="coach-quote"></p>
+        </div>
+
+        <!-- MEET Pillars Check -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-mono text-xs text-stone-500 tracking-widest">PILARES DE HOY</h2>
+            <span id="pillars-progress" class="font-mono text-xs text-gold">0/4</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3" id="pillars-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Weekly Agenda -->
+        <div class="mb-6">
+          <h2 class="font-mono text-xs text-stone-500 tracking-widest mb-3">SEMANA ACTUAL</h2>
+          <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide" id="week-strip">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Goals Dashboard -->
+        <div class="mb-6">
+          <h2 class="font-mono text-xs text-stone-500 tracking-widest mb-3">OBJETIVOS</h2>
+          <div class="space-y-3" id="goals-container">
+            <!-- Rendered by JS -->
+          </div>
+          <button id="btn-add-goal" class="mt-3 w-full border border-dashed border-stone-700 rounded-xl py-3 text-stone-600 text-sm font-mono tracking-wider hover:border-stone-500 hover:text-stone-400 transition-all">
+            + AÑADIR OBJETIVO
+          </button>
+        </div>
+
+        <!-- Stoic Quote of the Day -->
+        <div class="rounded-xl border border-stone-800 bg-stone-900/50 p-5">
+          <p class="font-mono text-xs text-stone-600 tracking-widest mb-3">REFLEXIÓN DEL DÍA</p>
+          <p class="font-display text-xl italic text-stone-300 leading-relaxed" id="daily-stoic"></p>
+          <p class="font-mono text-xs text-stone-600 mt-3" id="daily-stoic-author"></p>
+        </div>
+
+      </section>
+
+      <!-- ════ VIEW: ESPÍRITU (Meditar) ════ -->
+      <section id="view-espiritu" class="view px-4 py-6 max-w-2xl mx-auto">
+
+        <div class="section-header mb-6">
+          <p class="font-mono text-xs text-gold tracking-widest mb-1">SECCIÓN I</p>
+          <h2 class="font-display text-4xl italic text-stone-100">Espíritu</h2>
+          <p class="text-stone-500 text-sm mt-1 font-body">"Domina tu mente o ella te dominará a ti."</p>
+        </div>
+
+        <!-- Meditation Timer -->
+        <div class="rounded-2xl bg-stone-800/50 border border-stone-700/50 p-6 mb-5">
+          <p class="font-mono text-xs text-stone-500 tracking-widest mb-4">MEDITACIÓN</p>
+          <div class="flex flex-col items-center">
+            <div class="meditation-ring mb-6" id="meditation-ring">
+              <div class="meditation-ring-inner">
+                <span id="med-timer-display" class="font-mono text-4xl text-stone-200">10:00</span>
+                <span class="font-body text-xs text-stone-600 mt-1">minutos</span>
+              </div>
+            </div>
+            <div class="flex gap-3 mb-5">
+              <button data-mins="5"  class="med-preset font-mono text-xs px-4 py-2 rounded-full border border-stone-700 text-stone-400 hover:border-gold hover:text-gold transition-all">5'</button>
+              <button data-mins="10" class="med-preset font-mono text-xs px-4 py-2 rounded-full border border-stone-700 text-stone-400 hover:border-gold hover:text-gold transition-all active-preset">10'</button>
+              <button data-mins="20" class="med-preset font-mono text-xs px-4 py-2 rounded-full border border-stone-700 text-stone-400 hover:border-gold hover:text-gold transition-all">20'</button>
+              <button data-mins="30" class="med-preset font-mono text-xs px-4 py-2 rounded-full border border-stone-700 text-stone-400 hover:border-gold hover:text-gold transition-all">30'</button>
+            </div>
+            <div class="flex gap-4">
+              <button id="btn-med-start" class="btn-primary px-8 py-3 rounded-full font-mono text-sm tracking-wider">INICIAR</button>
+              <button id="btn-med-reset" class="px-6 py-3 rounded-full font-mono text-sm tracking-wider border border-stone-700 text-stone-400 hover:text-stone-200 transition-all">RESET</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mantras Player -->
+        <div class="rounded-2xl bg-stone-800/50 border border-stone-700/50 p-6 mb-5">
+          <p class="font-mono text-xs text-stone-500 tracking-widest mb-4">MANTRAS · AUDIO INTERNO</p>
+          <div class="space-y-2" id="mantras-list">
+            <!-- Rendered by JS -->
+          </div>
+          <div id="player-bar" class="hidden mt-4 pt-4 border-t border-stone-700/50">
+            <p class="font-body text-sm text-stone-300 mb-1" id="player-title">–</p>
+            <p class="font-mono text-xs text-stone-600" id="player-subtitle">Reproduciendo...</p>
+            <div class="flex items-center gap-3 mt-3">
+              <button id="player-prev" class="text-stone-500 hover:text-stone-300">⏮</button>
+              <button id="player-play" class="w-10 h-10 rounded-full bg-gold/20 border border-gold/40 text-gold flex items-center justify-center hover:bg-gold/30 transition-all">▶</button>
+              <button id="player-next" class="text-stone-500 hover:text-stone-300">⏭</button>
+              <div class="flex-1 bg-stone-700 rounded-full h-1">
+                <div class="bg-gold h-1 rounded-full transition-all" id="player-progress" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audiobooks -->
+        <div class="mb-5">
+          <p class="font-mono text-xs text-stone-500 tracking-widest mb-3">AUDIOLIBROS ESTOICOS</p>
+          <div class="grid gap-3" id="audiobooks-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ════ VIEW: CUERPO (Entrenar) ════ -->
+      <section id="view-cuerpo" class="view px-4 py-6 max-w-2xl mx-auto">
+
+        <div class="section-header mb-6">
+          <p class="font-mono text-xs text-ember tracking-widest mb-1">SECCIÓN II</p>
+          <h2 class="font-display text-4xl italic text-stone-100">Cuerpo</h2>
+          <p class="text-stone-500 text-sm mt-1 font-body">"El cuerpo es el instrumento del alma."</p>
+        </div>
+
+        <!-- Routine Selector -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-5 scrollbar-hide">
+          <button data-routine="yoga" class="routine-tab active-tab font-mono text-xs px-5 py-2.5 rounded-full whitespace-nowrap transition-all">YOGA</button>
+          <button data-routine="calistenia" class="routine-tab font-mono text-xs px-5 py-2.5 rounded-full whitespace-nowrap transition-all">CALISTENIA</button>
+          <button data-routine="estiramientos" class="routine-tab font-mono text-xs px-5 py-2.5 rounded-full whitespace-nowrap transition-all">ESTIRAMIENTOS</button>
+        </div>
+
+        <!-- Routine Content -->
+        <div id="routine-content">
+          <!-- Rendered by JS -->
+        </div>
+
+      </section>
+
+      <!-- ════ VIEW: TEMPLO (Nutrición) ════ -->
+      <section id="view-templo" class="view px-4 py-6 max-w-2xl mx-auto">
+
+        <div class="section-header mb-6">
+          <p class="font-mono text-xs text-moss tracking-widest mb-1">SECCIÓN III</p>
+          <h2 class="font-display text-4xl italic text-stone-100">Templo</h2>
+          <p class="text-stone-500 text-sm mt-1 font-body">"Que tu alimento sea tu medicina."</p>
+        </div>
+
+        <!-- Nutrition Tabs -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-5 scrollbar-hide">
+          <button data-nutr="musculo" class="nutr-tab active-nutr font-mono text-xs px-4 py-2.5 rounded-full whitespace-nowrap transition-all">MÚSCULO</button>
+          <button data-nutr="huesos"  class="nutr-tab font-mono text-xs px-4 py-2.5 rounded-full whitespace-nowrap transition-all">HUESOS</button>
+          <button data-nutr="detox"   class="nutr-tab font-mono text-xs px-4 py-2.5 rounded-full whitespace-nowrap transition-all">DETOX</button>
+          <button data-nutr="parasitos" class="nutr-tab font-mono text-xs px-4 py-2.5 rounded-full whitespace-nowrap transition-all">DESPARASITACIÓN</button>
+        </div>
+
+        <div id="nutrition-content">
+          <!-- Rendered by JS -->
+        </div>
+
+      </section>
+
+      <!-- ════ VIEW: DIARIO (Reflexiones) ════ -->
+      <section id="view-diario" class="view px-4 py-6 max-w-2xl mx-auto">
+
+        <div class="section-header mb-6">
+          <p class="font-mono text-xs text-stone-400 tracking-widest mb-1">DIARIO</p>
+          <h2 class="font-display text-4xl italic text-stone-100">Reflexiones</h2>
+          <p class="text-stone-500 text-sm mt-1 font-body">"Escríbete a ti mismo. Es el ejercicio más honesto."</p>
+        </div>
+
+        <!-- New Entry -->
+        <div class="rounded-2xl bg-stone-800/50 border border-stone-700/50 p-5 mb-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="font-mono text-xs text-stone-500 tracking-widest">NUEVA ENTRADA</p>
+            <span class="font-mono text-xs text-stone-600" id="entry-date-display"></span>
+          </div>
+          <input
+            id="entry-title"
+            type="text"
+            placeholder="Título de tu reflexión..."
+            class="w-full bg-transparent border-b border-stone-700 pb-2 mb-3 font-display text-xl text-stone-200 placeholder-stone-700 outline-none focus:border-stone-500 transition-colors italic"
+          />
+          <textarea
+            id="entry-body"
+            rows="5"
+            placeholder="Escribe lo que llevas dentro. Sin filtros, sin juicios..."
+            class="w-full bg-transparent font-body text-sm text-stone-300 placeholder-stone-700 outline-none resize-none leading-relaxed"
+          ></textarea>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-2 mt-3 mb-4" id="entry-tags-display">
+            <button data-tag="gratitud"  class="entry-tag font-mono text-xs px-3 py-1 rounded-full border border-stone-700 text-stone-600 hover:border-stone-500 hover:text-stone-400 transition-all">gratitud</button>
+            <button data-tag="reto"      class="entry-tag font-mono text-xs px-3 py-1 rounded-full border border-stone-700 text-stone-600 hover:border-stone-500 hover:text-stone-400 transition-all">reto</button>
+            <button data-tag="claridad"  class="entry-tag font-mono text-xs px-3 py-1 rounded-full border border-stone-700 text-stone-600 hover:border-stone-500 hover:text-stone-400 transition-all">claridad</button>
+            <button data-tag="aprendizaje" class="entry-tag font-mono text-xs px-3 py-1 rounded-full border border-stone-700 text-stone-600 hover:border-stone-500 hover:text-stone-400 transition-all">aprendizaje</button>
+          </div>
+
+          <!-- Voice Note -->
+          <div class="flex items-center gap-3 pt-3 border-t border-stone-700/50">
+            <button id="btn-voice" class="voice-btn flex items-center gap-2 bg-stone-700/50 hover:bg-stone-700 px-4 py-2 rounded-full font-mono text-xs text-stone-400 hover:text-stone-200 transition-all">
+              <span class="voice-icon">🎙</span>
+              <span id="voice-label">NOTA DE VOZ</span>
+            </button>
+            <div id="voice-timer" class="hidden font-mono text-xs text-ember">● REC 00:00</div>
+            <div class="flex-1"></div>
+            <button id="btn-save-entry" class="btn-primary px-5 py-2 rounded-full font-mono text-xs tracking-wider">GUARDAR</button>
+          </div>
+
+          <!-- Audio Playback Preview -->
+          <div id="voice-preview" class="hidden mt-3 bg-stone-700/30 rounded-xl p-3 flex items-center gap-3">
+            <button id="btn-play-preview" class="text-gold text-lg">▶</button>
+            <div class="flex-1">
+              <div class="bg-stone-700 rounded-full h-1">
+                <div id="preview-progress" class="bg-gold h-1 rounded-full" style="width:0%"></div>
+              </div>
+            </div>
+            <button id="btn-delete-voice" class="text-stone-600 hover:text-ember text-xs font-mono transition-colors">✕</button>
+          </div>
+        </div>
+
+        <!-- Entries List -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <p class="font-mono text-xs text-stone-500 tracking-widest">MIS REFLEXIONES</p>
+            <div class="flex gap-2">
+              <select id="filter-tag" class="bg-stone-800 border border-stone-700 text-stone-400 text-xs font-mono rounded-lg px-2 py-1 outline-none">
+                <option value="">TODOS</option>
+                <option value="gratitud">gratitud</option>
+                <option value="reto">reto</option>
+                <option value="claridad">claridad</option>
+                <option value="aprendizaje">aprendizaje</option>
+              </select>
+            </div>
+          </div>
+          <div id="entries-list" class="space-y-3">
+            <!-- Rendered by JS -->
+          </div>
+          <div id="entries-empty" class="hidden text-center py-12">
+            <p class="font-display text-2xl italic text-stone-700 mb-2">Aún no hay reflexiones</p>
+            <p class="font-body text-sm text-stone-700">"La pluma sobre el papel es el primer acto de valentía."</p>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ── BOTTOM NAV ── -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-stone-950/95 backdrop-blur-md border-t border-stone-800/50 flex items-center justify-around px-2 py-2 safe-bottom">
+      <button data-view="coach"    class="nav-btn active-nav flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="font-mono text-[9px] tracking-widest">COACH</span>
+      </button>
+      <button data-view="espiritu" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <span class="font-mono text-[9px] tracking-widest">ESPÍRITU</span>
+      </button>
+      <button data-view="cuerpo"   class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <span class="font-mono text-[9px] tracking-widest">CUERPO</span>
+      </button>
+      <button data-view="templo"   class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <span class="font-mono text-[9px] tracking-widest">TEMPLO</span>
+      </button>
+      <button data-view="diario"   class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        <span class="font-mono text-[9px] tracking-widest">DIARIO</span>
+      </button>
+    </nav>
+
+  </div><!-- /#app -->
+
+  <!-- ═══════════════════════════════ MODAL: GOAL ═══════════════════════════════ -->
+  <div id="modal-goal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-overlay absolute inset-0 bg-stone-950/80 backdrop-blur-sm"></div>
+    <div class="modal-content relative w-full max-w-sm bg-stone-800 border border-stone-700 rounded-2xl p-6">
+      <h3 class="font-display text-2xl italic text-stone-100 mb-4">Nuevo Objetivo</h3>
+      <input id="goal-text" type="text" placeholder="Describe tu objetivo..." class="w-full bg-stone-700/50 border border-stone-600 rounded-xl px-4 py-3 font-body text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-gold transition-colors mb-3" />
+      <select id="goal-scope" class="w-full bg-stone-700/50 border border-stone-600 rounded-xl px-4 py-3 font-mono text-xs text-stone-300 outline-none focus:border-gold transition-colors mb-3">
+        <option value="daily">DIARIO</option>
+        <option value="weekly">SEMANAL</option>
+        <option value="monthly">MENSUAL</option>
+      </select>
+      <select id="goal-pillar" class="w-full bg-stone-700/50 border border-stone-600 rounded-xl px-4 py-3 font-mono text-xs text-stone-300 outline-none focus:border-gold transition-colors mb-5">
+        <option value="M">MEDITAR</option>
+        <option value="E">ENTRENAR</option>
+        <option value="ES">ESTUDIAR</option>
+        <option value="T">TRABAJAR</option>
+      </select>
+      <div class="flex gap-3">
+        <button id="btn-cancel-goal" class="flex-1 py-3 rounded-xl font-mono text-xs text-stone-400 border border-stone-700 hover:text-stone-200 transition-all">CANCELAR</button>
+        <button id="btn-confirm-goal" class="flex-1 py-3 rounded-xl font-mono text-xs btn-primary">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ MODAL: ENTRY DETAIL ═══════════════════════════════ -->
+  <div id="modal-entry" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-overlay absolute inset-0 bg-stone-950/80 backdrop-blur-sm"></div>
+    <div class="modal-content relative w-full max-w-lg bg-stone-800 border border-stone-700 rounded-2xl p-6 max-h-[80vh] overflow-y-auto">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <p class="font-mono text-xs text-stone-600 mb-1" id="modal-entry-date"></p>
+          <h3 class="font-display text-2xl italic text-stone-100" id="modal-entry-title"></h3>
+        </div>
+        <button id="btn-close-entry" class="text-stone-600 hover:text-stone-300 transition-colors ml-4 mt-1">✕</button>
+      </div>
+      <p class="font-body text-sm text-stone-300 leading-relaxed mb-4" id="modal-entry-body"></p>
+      <div id="modal-entry-audio" class="hidden bg-stone-700/30 rounded-xl p-3 flex items-center gap-3 mb-4">
+        <button id="modal-play-audio" class="text-gold text-lg">▶</button>
+        <div class="flex-1">
+          <div class="bg-stone-700 rounded-full h-1">
+            <div id="modal-audio-progress" class="bg-gold h-1 rounded-full" style="width:0%"></div>
+          </div>
+        </div>
+        <span class="font-mono text-xs text-stone-600">Nota de voz</span>
+      </div>
+      <div class="flex flex-wrap gap-2" id="modal-entry-tags"></div>
+      <button id="btn-delete-entry" class="mt-5 w-full py-2 rounded-xl font-mono text-xs text-stone-600 border border-stone-700 hover:text-ember hover:border-ember/50 transition-all">ELIMINAR ENTRADA</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
+  <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div class="bg-stone-700 border border-stone-600 rounded-full px-5 py-2.5 font-mono text-xs text-stone-200 shadow-xl whitespace-nowrap" id="toast-msg"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

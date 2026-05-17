@@ -1,0 +1,503 @@
+/* ═══════════════════════════════════════════════════════
+   MEET: Estoicismo Activo — Stylesheet
+   Aesthetic: Tierra / Piedra / Estoico
+═══════════════════════════════════════════════════════ */
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --gold:   #c9a84c;
+  --ember:  #b5541c;
+  --moss:   #4a5240;
+  --stone-50: #faf5ef;
+  --stone-100: #f0e6da;
+  --stone-200: #ddc9b8;
+  --stone-300: #c4a992;
+  --stone-400: #a08070;
+  --stone-500: #7a6557;
+  --stone-600: #5c4d40;
+  --stone-700: #3d3229;
+  --stone-800: #2a231c;
+  --stone-900: #1a1612;
+  --stone-950: #0c0a08;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: var(--stone-900);
+  color: var(--stone-100);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Safe area bottom for mobile notch */
+.safe-bottom { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+
+/* ── Loader ── */
+#loader {
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#loader.hidden-loader {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-sigil {
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--stone-700);
+  border-radius: 50%;
+  position: relative;
+  animation: sigil-spin 8s linear infinite;
+}
+.loader-sigil::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--stone-600);
+  border-radius: 50%;
+  animation: sigil-spin-reverse 4s linear infinite;
+}
+.loader-sigil::after {
+  content: '◇';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--gold);
+  animation: none;
+}
+@keyframes sigil-spin { to { transform: rotate(360deg); } }
+@keyframes sigil-spin-reverse { to { transform: rotate(-360deg); } }
+
+.loader-bar {
+  width: 120px;
+  height: 1px;
+  background: var(--stone-800);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.loader-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: var(--gold);
+  border-radius: 1px;
+  animation: loader-slide 1.5s ease-in-out infinite;
+}
+@keyframes loader-slide {
+  0%   { transform: translateX(-100%); }
+  50%  { transform: translateX(200%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ── Views ── */
+.view { display: none; }
+.view.active { display: block; animation: view-enter 0.4s ease; }
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Navigation ── */
+.nav-btn {
+  color: var(--stone-600);
+  min-width: 56px;
+}
+.nav-btn:hover, .nav-btn.active-nav {
+  color: var(--gold);
+  background: rgba(201,168,76,0.07);
+}
+.nav-btn.active-nav { color: var(--gold); }
+
+/* ── Buttons ── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold), #a8893c);
+  color: var(--stone-950);
+  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(201,168,76,0.2);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(201,168,76,0.35);
+}
+.btn-primary:active { transform: translateY(0); }
+
+/* ── Coach Card ── */
+.coach-card {
+  position: relative;
+}
+.coach-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ── Pillar Cards ── */
+.pillar-card {
+  border-radius: 16px;
+  padding: 1rem;
+  border: 1px solid var(--stone-700);
+  background: rgba(42,35,28,0.5);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+.pillar-card:hover { border-color: var(--stone-500); background: rgba(42,35,28,0.8); }
+.pillar-card.checked {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.07);
+}
+.pillar-card.checked .pillar-check {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--stone-950);
+}
+.pillar-check {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--stone-600);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  transition: all 0.2s ease;
+}
+.pillar-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  line-height: 1;
+  font-style: italic;
+  color: var(--stone-400);
+  transition: color 0.2s;
+}
+.pillar-card.checked .pillar-letter { color: var(--gold); }
+
+/* ── Week Strip ── */
+.week-day {
+  flex-shrink: 0;
+  width: 52px;
+  border-radius: 14px;
+  padding: 10px 6px;
+  border: 1px solid var(--stone-800);
+  background: var(--stone-800);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.week-day.today {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.08);
+}
+.week-day.completed { border-color: var(--stone-600); background: var(--stone-800); }
+.week-day .day-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--stone-600); text-transform: uppercase; }
+.week-day .day-num { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--stone-400); }
+.week-day.today .day-num { color: var(--gold); }
+.week-day .day-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--stone-700); }
+.week-day.completed .day-dot { background: var(--stone-500); }
+
+/* ── Goals ── */
+.goal-item {
+  border-radius: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--stone-800);
+  background: var(--stone-800);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+.goal-item.done .goal-text { text-decoration: line-through; color: var(--stone-600); }
+.goal-check-btn {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--stone-600);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+}
+.goal-item.done .goal-check-btn {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: white;
+}
+
+/* ── Meditation Ring ── */
+.meditation-ring {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid var(--stone-700);
+  background: radial-gradient(ellipse at center, rgba(201,168,76,0.05) 0%, transparent 70%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  transition: border-color 0.3s;
+}
+.meditation-ring::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--stone-800);
+}
+.meditation-ring.active {
+  border-color: var(--gold);
+  animation: med-pulse 3s ease-in-out infinite;
+}
+@keyframes med-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.15); }
+  50% { box-shadow: 0 0 0 20px rgba(201,168,76,0); }
+}
+.meditation-ring-inner {
+  display: flex; flex-direction: column; align-items: center;
+  z-index: 1;
+}
+
+/* ── Med Preset ── */
+.active-preset {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+}
+
+/* ── Mantras ── */
+.mantra-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--stone-700);
+  background: var(--stone-800);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.mantra-item:hover, .mantra-item.playing { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+.mantra-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* ── Audiobook Cards ── */
+.audiobook-card {
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--stone-700);
+  background: var(--stone-800);
+  display: flex; gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.audiobook-card:hover { border-color: var(--stone-500); transform: translateY(-2px); }
+.audiobook-cover {
+  width: 60px; height: 80px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  background: var(--stone-700);
+}
+
+/* ── Routine Tabs ── */
+.routine-tab {
+  border: 1px solid var(--stone-700);
+  color: var(--stone-500);
+  background: var(--stone-800);
+  border-radius: 999px;
+}
+.routine-tab:hover { border-color: var(--stone-500); color: var(--stone-300); }
+.routine-tab.active-tab {
+  background: rgba(181,84,28,0.15);
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+/* ── Exercise Cards ── */
+.exercise-card {
+  border-radius: 14px;
+  border: 1px solid var(--stone-700);
+  background: var(--stone-800);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.exercise-header {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+}
+.exercise-header:hover { background: rgba(255,255,255,0.02); }
+.exercise-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.exercise-body.open { max-height: 500px; }
+.step-item {
+  display: flex; gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--stone-700);
+}
+.step-item:last-child { border-bottom: none; }
+.step-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--stone-700);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--stone-400);
+  flex-shrink: 0;
+}
+
+/* ── Nutrition Tabs ── */
+.nutr-tab {
+  border: 1px solid var(--stone-700);
+  color: var(--stone-500);
+  background: var(--stone-800);
+  border-radius: 999px;
+}
+.nutr-tab.active-nutr {
+  background: rgba(74,82,64,0.3);
+  border-color: var(--moss);
+  color: #8fa882;
+}
+
+/* ── Nutrition Cards ── */
+.food-card {
+  border-radius: 12px;
+  border: 1px solid var(--stone-700);
+  background: var(--stone-800);
+  padding: 14px;
+  transition: all 0.2s ease;
+}
+.food-card:hover { border-color: var(--stone-500); }
+.food-emoji { font-size: 28px; margin-bottom: 6px; }
+
+/* ── Diary ── */
+.entry-tag {
+  user-select: none;
+}
+.entry-tag.selected {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201,168,76,0.07);
+}
+
+.voice-btn.recording {
+  background: rgba(181,84,28,0.2);
+  border: 1px solid var(--ember);
+  color: var(--ember);
+}
+.voice-btn.recording .voice-icon { animation: pulse-icon 0.8s ease-in-out infinite; }
+@keyframes pulse-icon {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.diary-entry {
+  border-radius: 14px;
+  border: 1px solid var(--stone-700);
+  background: var(--stone-800);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.diary-entry:hover { border-color: var(--stone-500); transform: translateY(-1px); }
+
+.tag-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--stone-700);
+  color: var(--stone-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Modal ── */
+#modal-goal.open,
+#modal-entry.open { display: flex; }
+.modal-content { animation: modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── Toast ── */
+#toast.show {
+  display: flex;
+  animation: toast-in 0.3s ease;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ── Progress Bar ── */
+.progress-track {
+  height: 4px;
+  background: var(--stone-700);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--gold), var(--ember));
+  transition: width 0.5s ease;
+}
+
+/* ── Scope Badge ── */
+.scope-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.scope-daily   { background: rgba(201,168,76,0.1);  color: var(--gold); }
+.scope-weekly  { background: rgba(181,84,28,0.1);   color: var(--ember); }
+.scope-monthly { background: rgba(74,82,64,0.2);    color: #8fa882; }
+
+/* ── Expand chevron ── */
+.chevron {
+  transition: transform 0.3s ease;
+}
+.chevron.open { transform: rotate(180deg); }
+
+/* ── Grain overlay ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--stone-700); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--stone-600); }
