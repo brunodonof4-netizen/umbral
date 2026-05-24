@@ -621,10 +621,6 @@ function renderCuerpo(routine = STATE.currentRoutine) {
                   <p class="font-body text-xs text-stone-400 leading-relaxed flex-1">${s}</p>
                 </div>
               `).join('')}
-              ${ex.img ? `
-              <div class="mt-4 rounded-xl overflow-hidden border border-stone-700/40">
-                <img src="${ex.img}" alt="${ex.name}" class="w-full object-cover" loading="lazy" />
-              </div>` : ''}
               <button class="mt-3 btn-primary w-full py-2.5 rounded-xl font-mono text-xs tracking-wider" data-start-routine="${i}">
                 INICIAR RUTINA
               </button>
@@ -1013,6 +1009,8 @@ function boot() {
   initGoalModal();
   initPlayer();
   initDiario();
+  initSettings();
+  initCoachIA();
 
   // Render initial views
   renderCoach();
@@ -1078,6 +1076,159 @@ async function preloadAudios() {
       }
     }
   } catch (e) {}
+}
+
+// ─────────────────────────────────────────────
+// SETTINGS MODAL
+// ─────────────────────────────────────────────
+
+function initSettings() {
+  const modal     = $('#modal-settings');
+  const input     = $('#settings-apikey');
+  const status    = $('#settings-key-status');
+
+  function openSettings() {
+    const existing = localStorage.getItem('umbral_gemini_key');
+    input.value = existing ? '••••••••••••••••••••' : '';
+    status.textContent = existing ? '✓ Clave guardada en este dispositivo' : '';
+    status.style.color = existing ? 'var(--gold)' : '';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeSettings() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  $('#btn-settings').addEventListener('click', openSettings);
+  $('#btn-open-settings-coach')?.addEventListener('click', openSettings);
+  $('#btn-close-settings').addEventListener('click', closeSettings);
+  modal.querySelector('.modal-overlay').addEventListener('click', closeSettings);
+
+  $('#btn-save-key').addEventListener('click', () => {
+    const val = input.value.trim();
+    if (!val || val.startsWith('•')) {
+      showToast('⚠ Pegá una clave válida');
+      return;
+    }
+    localStorage.setItem('umbral_gemini_key', val);
+    status.textContent = '✓ Clave guardada';
+    status.style.color = 'var(--gold)';
+    showToast('🔑 API Key guardada');
+    updateCoachIAUI();
+    setTimeout(closeSettings, 800);
+  });
+
+  $('#btn-clear-key').addEventListener('click', () => {
+    localStorage.removeItem('umbral_gemini_key');
+    input.value = '';
+    status.textContent = 'Clave eliminada';
+    status.style.color = 'var(--stone-500)';
+    updateCoachIAUI();
+    showToast('Clave eliminada');
+  });
+}
+
+// ─────────────────────────────────────────────
+// COACH IA
+// ─────────────────────────────────────────────
+
+function updateCoachIAUI() {
+  const hasKey = !!localStorage.getItem('umbral_gemini_key');
+  $('#coach-ia-no-key').classList.toggle('hidden', hasKey);
+  $('#coach-ia-input-area').classList.toggle('hidden', !hasKey);
+}
+
+function buildCoachContext() {
+  const today = todayKey();
+  const pillars = STATE.pillarsToday[today] || {};
+  const completedPillars = PILLARS.filter(p => pillars[p.key]).map(p => p.label);
+  const pendingPillars   = PILLARS.filter(p => !pillars[p.key]).map(p => p.label);
+
+  const activeGoals = STATE.goals.filter(g => !g.done).slice(0, 5).map(g => g.text);
+
+  const recentEntries = STATE.entries.slice(0, 3).map(e =>
+    `[${e.date || ''}] ${e.text ? e.text.substring(0, 120) : ''}`.trim()
+  ).filter(Boolean);
+
+  return `Sos un coach estoico inspirado en Marco Aurelio, Epicteto y Séneca. Respondés en español rioplatense, de forma directa, firme y breve (máximo 4 oraciones). No usás listas ni títulos. Hablás de igual a igual, sin suavizar la verdad.
+
+Contexto del usuario hoy:
+- Pilares completados: ${completedPillars.length ? completedPillars.join(', ') : 'ninguno aún'}
+- Pilares pendientes: ${pendingPillars.length ? pendingPillars.join(', ') : 'todos completados'}
+- Objetivos activos: ${activeGoals.length ? activeGoals.join(' | ') : 'sin objetivos definidos'}
+- Reflexiones recientes del diario: ${recentEntries.length ? recentEntries.join(' || ') : 'sin entradas'}`;
+}
+
+async function askCoach() {
+  const apiKey = localStorage.getItem('umbral_gemini_key');
+  if (!apiKey) { showToast('⚠ Configurá tu API Key primero'); return; }
+
+  const userMsg = $('#coach-ia-input').value.trim();
+  if (!userMsg) { showToast('Escribí tu consulta'); return; }
+
+  const btn        = $('#btn-ask-coach');
+  const btnText    = $('#coach-ia-btn-text');
+  const loading    = $('#coach-ia-loading');
+  const responseEl = $('#coach-ia-response');
+  const textEl     = $('#coach-ia-text');
+
+  btn.disabled = true;
+  btnText.textContent = 'CONSULTANDO...';
+  loading.classList.remove('hidden');
+  loading.style.animation = 'sigil-spin 1s linear infinite';
+  responseEl.classList.add('hidden');
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: buildCoachContext() }] },
+        contents: [{ parts: [{ text: userMsg }] }],
+        generationConfig: { maxOutputTokens: 200, temperature: 0.8 }
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 400 || res.status === 403) {
+        showToast('⚠ API Key inválida — revisala en Configuración');
+      } else {
+        showToast(`Error ${res.status} — intentá de nuevo`);
+      }
+      return;
+    }
+
+    const data = await res.json();
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (reply) {
+      textEl.textContent = reply;
+      responseEl.classList.remove('hidden');
+      $('#coach-ia-input').value = '';
+    } else {
+      showToast('Respuesta vacía — intentá de nuevo');
+    }
+
+  } catch (e) {
+    showToast('Sin conexión — verificá internet');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'CONSULTAR AL COACH';
+    loading.classList.add('hidden');
+  }
+}
+
+function initCoachIA() {
+  updateCoachIAUI();
+  $('#btn-ask-coach').addEventListener('click', askCoach);
+  $('#coach-ia-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askCoach(); }
+  });
 }
 
 // Start

@@ -134,6 +134,34 @@
           <p class="font-mono text-xs text-stone-600 mt-3" id="daily-stoic-author"></p>
         </div>
 
+        <!-- Coach IA -->
+        <div class="mt-6 rounded-2xl border border-stone-700/50 bg-stone-800/50 p-5" id="coach-ia-block">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-gold text-sm">◈</span>
+            <p class="font-mono text-xs text-stone-500 tracking-widest">COACH IA</p>
+          </div>
+
+          <!-- Respuesta IA -->
+          <div id="coach-ia-response" class="hidden mb-4 rounded-xl bg-stone-900/60 border border-stone-700/40 p-4">
+            <p class="font-display italic text-stone-300 text-base leading-relaxed" id="coach-ia-text"></p>
+          </div>
+
+          <!-- Estado: sin API key -->
+          <div id="coach-ia-no-key" class="mb-4 rounded-xl bg-stone-900/40 border border-dashed border-stone-700 p-4 text-center">
+            <p class="font-body text-xs text-stone-600 leading-relaxed">Configurá tu API Key de Google AI Studio<br>para activar el coach.</p>
+            <button id="btn-open-settings-coach" class="mt-3 font-mono text-xs text-gold border border-gold/30 px-4 py-1.5 rounded-full hover:bg-gold/10 transition-all">CONFIGURAR →</button>
+          </div>
+
+          <!-- Input + botón -->
+          <div id="coach-ia-input-area" class="hidden">
+            <textarea id="coach-ia-input" rows="2" placeholder="Consultá algo al coach... ej: ¿cómo puedo mantener la disciplina hoy?" class="w-full bg-stone-700/40 border border-stone-600 rounded-xl px-4 py-3 font-body text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-gold transition-colors resize-none mb-3"></textarea>
+            <button id="btn-ask-coach" class="btn-primary w-full py-2.5 rounded-xl font-mono text-xs tracking-wider flex items-center justify-center gap-2">
+              <span id="coach-ia-btn-text">CONSULTAR AL COACH</span>
+              <span id="coach-ia-loading" class="hidden">⟳</span>
+            </button>
+          </div>
+        </div>
+
       </section>
 
       <!-- ════ VIEW: ESPÍRITU (Meditar) ════ -->
@@ -403,6 +431,27 @@
       </div>
       <div class="flex flex-wrap gap-2" id="modal-entry-tags"></div>
       <button id="btn-delete-entry" class="mt-5 w-full py-2 rounded-xl font-mono text-xs text-stone-600 border border-stone-700 hover:text-ember hover:border-ember/50 transition-all">ELIMINAR ENTRADA</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ MODAL: SETTINGS ═══════════════════════════════ -->
+  <div id="modal-settings" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-overlay absolute inset-0 bg-stone-950/80 backdrop-blur-sm"></div>
+    <div class="modal-content relative w-full max-w-sm bg-stone-800 border border-stone-700 rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-display text-2xl italic text-stone-100">Configuración</h3>
+        <button id="btn-close-settings" class="text-stone-600 hover:text-stone-300 transition-colors">✕</button>
+      </div>
+
+      <p class="font-mono text-xs text-stone-500 tracking-widest mb-2">COACH IA — API KEY</p>
+      <p class="font-body text-xs text-stone-600 leading-relaxed mb-3">Tu clave se guarda solo en este dispositivo. Nunca sale de tu navegador.</p>
+      <input id="settings-apikey" type="password" placeholder="Pegá tu Google AI Studio key..." class="w-full bg-stone-700/50 border border-stone-600 rounded-xl px-4 py-3 font-mono text-xs text-stone-200 placeholder-stone-600 outline-none focus:border-gold transition-colors mb-2" />
+      <div id="settings-key-status" class="font-mono text-xs text-stone-600 mb-4 min-h-[16px]"></div>
+
+      <div class="flex gap-3">
+        <button id="btn-clear-key" class="flex-1 py-3 rounded-xl font-mono text-xs text-stone-400 border border-stone-700 hover:text-ember hover:border-ember/50 transition-all">ELIMINAR CLAVE</button>
+        <button id="btn-save-key" class="flex-1 py-3 rounded-xl font-mono text-xs btn-primary">GUARDAR</button>
+      </div>
     </div>
   </div>
 
