@@ -1189,10 +1189,11 @@ async function askCoach() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-  system_instruction: { role: 'user', parts: [{ text: buildCoachContext() }] },
-  contents: [{ role: 'user', parts: [{ text: userMsg }] }],
-  generationConfig: { maxOutputTokens: 200, temperature: 0.8 }
-})
+        system_instruction: { role: 'user', parts: [{ text: buildCoachContext() }] },
+        contents: [{ role: 'user', parts: [{ text: userMsg }] }],
+        generationConfig: { maxOutputTokens: 200, temperature: 0.8 }
+      })
+    });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
