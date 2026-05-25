@@ -1186,16 +1186,38 @@ async function askCoach() {
 
   try {
     const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { role: 'user', parts: [{ text: buildCoachContext() }] },
-        contents: [{ role: 'user', parts: [{ text: userMsg }] }],
-        generationConfig: { maxOutputTokens: 200, temperature: 0.8 }
-      })
-    });
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
 
+  body: JSON.stringify({
+    system_instruction: {
+      parts: [
+        { text: buildCoachContext() }
+      ]
+    },
+
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          { text: userMsg }
+        ]
+      }
+    ],
+
+    generationConfig: {
+      maxOutputTokens: 200,
+      temperature: 0.8
+    }
+  })
+});
     if (!res.ok) {
+      const errText = await res.text();
+      console.error("ERROR GEMINI:", errText);
+      alert(errText);
+      return;
       const err = await res.json().catch(() => ({}));
       if (res.status === 400 || res.status === 403) {
         showToast('⚠ API Key inválida — revisala en Configuración');
