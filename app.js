@@ -1192,7 +1192,7 @@ async function askCoach() {
         'X-Title': 'Umbral by AS'
       },
       body: JSON.stringify({
-        model: 'google/gemma-2-9b-it:free',
+        model: 'deepseek/deepseek-chat',
         messages: [
           { role: 'system', content: buildCoachContext() },
           { role: 'user',   content: userMsg }
